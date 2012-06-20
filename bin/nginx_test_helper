@@ -1,0 +1,6 @@
+#!/usr/bin/env ruby
+
+require 'rubygems'
+require 'nginx_test_helper'
+
+NginxTestHelper::CommandLineTool.new.process ARGV

@@ -1,0 +1,8 @@
+Nginx Test Helper has been installed with example specs.
+
+Edit the file 'spec/nginx_configuration.rb'
+setting your module configuration template on 'template_configuration' method
+and your default configuration values on 'default_configuration' method.
+
+On 'spec/example_spec.rb' file has some examples of how can you do your tests.
+
