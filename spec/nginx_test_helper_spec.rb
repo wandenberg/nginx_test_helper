@@ -32,12 +32,26 @@ describe NginxTestHelper do
       body.should eql("BODY")
     end
 
+    it "should pass 'wait_for' attribute to 'read_response_on_socket' method when doing a GET in a url" do
+      socket.should_receive(:print).with("GET /index.html HTTP/1.0\r\n\r\n")
+      self.should_receive(:read_response_on_socket).with(socket, "wait for")
+
+      get_in_socket("/index.html", socket, "wait for")
+    end
+
     it "should be possible to do a POST in an url using the opened socket, and receive header and body response" do
       socket.should_receive(:print).with("POST /service HTTP/1.0\r\nContent-Length: 4\r\n\r\nBODY")
 
       headers, body = post_in_socket("/service", "BODY", socket)
       headers.should eql("HTTP 200 OK")
       body.should eql("BODY")
+    end
+
+    it "should pass 'wait_for' attribute to 'read_response_on_socket' method when doing a POST in a url" do
+      socket.should_receive(:print).with("POST /service HTTP/1.0\r\nContent-Length: 4\r\n\r\nBODY")
+      self.should_receive(:read_response_on_socket).with(socket, "wait for")
+
+      headers, body = post_in_socket("/service", "BODY", socket, "wait for")
     end
 
     it "should be possible read a response in a opened socket" do

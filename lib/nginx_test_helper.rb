@@ -30,14 +30,14 @@ module NginxTestHelper
     TCPSocket.open(host, port)
   end
 
-  def get_in_socket(url, socket)
+  def get_in_socket(url, socket, wait_for=nil)
     socket.print("GET #{url} HTTP/1.0\r\n\r\n")
-    read_response_on_socket(socket)
+    read_response_on_socket(socket, wait_for)
   end
 
-  def post_in_socket(url, body, socket)
+  def post_in_socket(url, body, socket, wait_for=nil)
     socket.print("POST #{url} HTTP/1.0\r\nContent-Length: #{body.size}\r\n\r\n#{body}")
-    read_response_on_socket(socket)
+    read_response_on_socket(socket, wait_for)
   end
 
   def read_response_on_socket(socket, wait_for=nil)
