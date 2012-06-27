@@ -1,10 +1,6 @@
 if defined?(RSpec)
   RSpec.configure do |config|
     config.include NginxTestHelper
-
-    config.after(:each) do
-      NginxTestHelper::Config.delete_config_and_log_files(config_id) if has_passed?
-    end
   end
 
   RSpec::Matchers.define :be_in_the_interval do |min, max|

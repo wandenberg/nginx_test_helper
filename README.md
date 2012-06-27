@@ -49,6 +49,31 @@ You can customize the timeout value, default 5 seconds, using the second paramet
       sleep 2
     end
 
+### start_server / stop_server
+
+If you want to start the server and run many test cases with the same configuration you can use `start_server / stop_server` methods.
+
+    before(:all) do
+      configuration = {} # Your configuration hash
+      @config = NginxTestHelper::Config.new("example_config_id", configuration)
+      start_server(@config)
+    end
+
+    after(:all) do
+      stop_server(@config)
+    end
+
+### delete_config_and_log_files
+
+You can use this method to delete the files created by configuration.
+One usecase is call it after the test, if it has passed, like:
+
+	RSpec.configure do |config|
+	  config.after(:each) do
+	    NginxTestHelper::Config.delete_config_and_log_files(config_id) if has_passed?
+	  end
+	end
+
 ## Environment variables
 
 Some default values can be overwriten by environment variables.

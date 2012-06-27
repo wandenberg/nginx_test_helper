@@ -34,6 +34,10 @@ http {
     listen        <%= nginx_port %>;
     server_name   <%= nginx_host %>;
 
+    location /test {
+      <%= write_directive("return", return_code.nil? ? return_code : return_code + 1, "return_code") %>
+    }
+
     location / {
       <%= write_directive("unknown_directive", unknown_value) %>
       <%= write_directive("return", return_code, "return_code") %>

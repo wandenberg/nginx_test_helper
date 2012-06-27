@@ -30,6 +30,7 @@ module NginxTestHelper
 
         copy_unless_exists('spec/nginx_configuration.rb')
         copy_unless_exists('spec/example_spec.rb')
+        copy_unless_exists('spec/example2_spec.rb')
 
         write_mode = 'w'
         if File.exist?(dest_path('spec/spec_helper.rb'))
