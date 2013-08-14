@@ -25,33 +25,65 @@ describe NginxTestHelper do
     end
 
     it "should be possible to do a GET in an url using the opened socket, and receive header and body response" do
-      socket.should_receive(:print).with("GET /index.html HTTP/1.0\r\n\r\n")
+      socket.should_receive(:print).with("GET /index.html HTTP/1.1\r\nHost: localhost\r\n\r\n")
 
       headers, body = get_in_socket("/index.html", socket)
       headers.should eql("HTTP 200 OK")
       body.should eql("BODY")
     end
 
-    it "should pass 'wait_for' attribute to 'read_response_on_socket' method when doing a GET in a url" do
+    it "should be possible specify the host header value to do a GET" do
+      socket.should_receive(:print).with("GET /index.html HTTP/1.1\r\nHost: some_host_value\r\n\r\n")
+
+      headers, body = get_in_socket("/index.html", socket, {:host_header => "some_host_value"})
+      headers.should eql("HTTP 200 OK")
+      body.should eql("BODY")
+    end
+
+    it "should be possible use http 1.0 to do a GET" do
       socket.should_receive(:print).with("GET /index.html HTTP/1.0\r\n\r\n")
+
+      headers, body = get_in_socket("/index.html", socket, {:use_http_1_0 => true})
+      headers.should eql("HTTP 200 OK")
+      body.should eql("BODY")
+    end
+
+    it "should pass 'wait_for' attribute to 'read_response_on_socket' method when doing a GET in a url" do
+      socket.should_receive(:print).with("GET /index.html HTTP/1.1\r\nHost: localhost\r\n\r\n")
       self.should_receive(:read_response_on_socket).with(socket, "wait for")
 
-      get_in_socket("/index.html", socket, "wait for")
+      get_in_socket("/index.html", socket, {:wait_for => "wait for"})
     end
 
     it "should be possible to do a POST in an url using the opened socket, and receive header and body response" do
-      socket.should_receive(:print).with("POST /service HTTP/1.0\r\nContent-Length: 4\r\n\r\nBODY")
+      socket.should_receive(:print).with("POST /service HTTP/1.1\r\nHost: localhost\r\nContent-Length: 4\r\n\r\nBODY")
 
       headers, body = post_in_socket("/service", "BODY", socket)
       headers.should eql("HTTP 200 OK")
       body.should eql("BODY")
     end
 
-    it "should pass 'wait_for' attribute to 'read_response_on_socket' method when doing a POST in a url" do
+    it "should be possible specify the host header value to do a POST" do
+      socket.should_receive(:print).with("POST /service HTTP/1.1\r\nHost: some_host_value\r\nContent-Length: 4\r\n\r\nBODY")
+
+      headers, body = post_in_socket("/service", "BODY", socket, {:host_header => "some_host_value"})
+      headers.should eql("HTTP 200 OK")
+      body.should eql("BODY")
+    end
+
+    it "should be possible use http 1.0 to do a POST" do
       socket.should_receive(:print).with("POST /service HTTP/1.0\r\nContent-Length: 4\r\n\r\nBODY")
+
+      headers, body = post_in_socket("/service", "BODY", socket, {:use_http_1_0 => true})
+      headers.should eql("HTTP 200 OK")
+      body.should eql("BODY")
+    end
+
+    it "should pass 'wait_for' attribute to 'read_response_on_socket' method when doing a POST in a url" do
+      socket.should_receive(:print).with("POST /service HTTP/1.1\r\nHost: localhost\r\nContent-Length: 4\r\n\r\nBODY")
       self.should_receive(:read_response_on_socket).with(socket, "wait for")
 
-      headers, body = post_in_socket("/service", "BODY", socket, "wait for")
+      headers, body = post_in_socket("/service", "BODY", socket, {:wait_for => "wait for"})
     end
 
     it "should be possible read a response in a opened socket" do

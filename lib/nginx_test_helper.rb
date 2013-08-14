@@ -4,7 +4,8 @@ require "nginx_test_helper/config"
 require "nginx_test_helper/rspec_utils"
 require "nginx_test_helper/command_line_tool"
 require "popen4"
-require 'timeout'
+require "timeout"
+require "socket"
 
 module NginxTestHelper
   include NginxTestHelper::EnvMethods
@@ -30,14 +31,16 @@ module NginxTestHelper
     TCPSocket.open(host, port)
   end
 
-  def get_in_socket(url, socket, wait_for=nil)
-    socket.print("GET #{url} HTTP/1.0\r\n\r\n")
-    read_response_on_socket(socket, wait_for)
+  def get_in_socket(url, socket, options={})
+    options = {:use_http_1_0 => false, :host_header => "localhost"}.merge(options)
+    socket.print("GET #{url} HTTP/1.#{options[:use_http_1_0] ? "0" : "1\r\nHost: #{options[:host_header]}"}\r\n\r\n")
+    read_response_on_socket(socket, options[:wait_for])
   end
 
-  def post_in_socket(url, body, socket, wait_for=nil)
-    socket.print("POST #{url} HTTP/1.0\r\nContent-Length: #{body.size}\r\n\r\n#{body}")
-    read_response_on_socket(socket, wait_for)
+  def post_in_socket(url, body, socket, options={})
+    options = {:use_http_1_0 => false, :host_header => "localhost"}.merge(options)
+    socket.print("POST #{url} HTTP/1.#{options[:use_http_1_0] ? "0" : "1\r\nHost: #{options[:host_header]}"}\r\nContent-Length: #{body.size}\r\n\r\n#{body}")
+    read_response_on_socket(socket, options[:wait_for])
   end
 
   def read_response_on_socket(socket, wait_for=nil)
