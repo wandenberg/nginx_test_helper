@@ -84,5 +84,15 @@ describe NginxTestHelper::Config do
       conf.should include(%(\n#comment foo\nname "bar";))
       conf.should include(%(\nwithout_comment "bar";))
     end
+
+    context "when value is an Array" do
+      let(:configuration) { {:foo => ["bar", "zzz"], :xyz => nil, :configuration_template => %(\n<%= write_directive('name', foo, 'comment foo') %>\n<%= write_directive('without_comment', foo) %>)} }
+
+      it "should write multiple itens without quotes" do
+        conf = File.read(subject.configuration[:configuration_filename])
+        conf.should include(%(\n#comment foo\nname bar zzz;))
+        conf.should include(%(\nwithout_comment bar zzz;))
+      end
+    end
   end
 end

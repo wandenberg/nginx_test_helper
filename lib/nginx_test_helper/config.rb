@@ -1,3 +1,4 @@
+require "nginx_test_helper/env_methods"
 require "erb"
 
 module NginxTestHelper
@@ -33,7 +34,11 @@ module NginxTestHelper
     def write_directive(name, value, comment=nil)
       directive = []
       directive << %(##{comment}) unless comment.nil?
-      directive << %(#{"#" if value.nil?}#{name} "#{value}";)
+      if (value.is_a?(Array))
+        directive << %(#{"#" if value.empty?}#{name} #{value.join(" ")};)
+      else
+        directive << %(#{"#" if value.nil?}#{name} "#{value}";)
+      end
       directive.join("\n")
     end
 
