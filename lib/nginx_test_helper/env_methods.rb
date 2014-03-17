@@ -24,6 +24,18 @@ module NginxTestHelper
       def nginx_tests_tmp_dir
         ENV['NGINX_TESTS_TMP_DIR'].nil? ? "/tmp/nginx_tests" : ENV['NGINX_TESTS_TMP_DIR']
       end
+
+      def nginx_tests_cores_dir
+        File.join(nginx_tests_tmp_dir, "cores")
+      end
+
+      def nginx_tests_core_dir(current_test)
+        File.join(nginx_tests_cores_dir, current_test)
+      end
+
+      def nginx_event_type
+        (RUBY_PLATFORM =~ /darwin/) ? 'kqueue' : 'epoll'
+      end
     end
 
     include ClassMethods

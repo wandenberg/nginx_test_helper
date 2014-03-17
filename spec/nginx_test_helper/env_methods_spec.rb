@@ -26,6 +26,14 @@ describe NginxTestHelper::EnvMethods do
       it "should return nginx tests tmp dir" do
         subject.nginx_tests_tmp_dir.should eql("/tmp/nginx_tests")
       end
+
+      it "should return nginx tests cores dir based on tmp dir" do
+        subject.nginx_tests_cores_dir.should eql("/tmp/nginx_tests/cores")
+      end
+
+      it "should return nginx tests core dir based on tmp dir" do
+        subject.nginx_tests_core_dir("test_id").should eql("/tmp/nginx_tests/cores/test_id")
+      end
     end
 
     context "with environment values" do
@@ -53,6 +61,16 @@ describe NginxTestHelper::EnvMethods do
         ENV['NGINX_TESTS_TMP_DIR'] = "/path/to/tests/tmp/dir"
         subject.nginx_tests_tmp_dir.should eql("/path/to/tests/tmp/dir")
       end
+
+      it "should return nginx tests cores dir based on tmp dir" do
+        ENV['NGINX_TESTS_TMP_DIR'] = "/path/to/tests/tmp/dir"
+        subject.nginx_tests_cores_dir.should eql("/path/to/tests/tmp/dir/cores")
+      end
+
+      it "should return nginx tests core dir based on tmp dir" do
+        ENV['NGINX_TESTS_TMP_DIR'] = "/path/to/tests/tmp/dir"
+        subject.nginx_tests_core_dir("test_id").should eql("/path/to/tests/tmp/dir/cores/test_id")
+      end
     end
 
     it "should use nginx host and port to compose nginx address" do
@@ -60,6 +78,22 @@ describe NginxTestHelper::EnvMethods do
       subject.stub(:nginx_port).and_return("some_port")
 
       subject.nginx_address.should eql("http://some_host:some_port")
+    end
+
+    context "when on a Darwin ruby platform" do
+      it "should return kqueue as event type" do
+        with_constants({"RUBY_PLATFORM" => "x86_64-darwin13.0"}) do
+          subject.nginx_event_type.should eql("kqueue")
+        end
+      end
+    end
+
+    context "when not on a Darwin ruby platform" do
+      it "should return epoll as event type" do
+        with_constants({"RUBY_PLATFORM" => "Any other platform"}) do
+          subject.nginx_event_type.should eql("epoll")
+        end
+      end
     end
   end
 

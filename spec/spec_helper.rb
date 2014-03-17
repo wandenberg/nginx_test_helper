@@ -30,6 +30,24 @@ end
 # Requires lib.
 Dir[File.expand_path('../lib/**/*.rb', File.dirname(__FILE__))].each { |f| require f }
 
+def with_constants(constants, &block)
+  old_verbose, $VERBOSE = $VERBOSE, nil
+  saved_constants = {}
+  constants.each do |constant, val|
+    saved_constants[ constant ] = Object.const_get( constant )
+    Object.const_set( constant, val )
+  end
+
+  begin
+    block.call
+  ensure
+    constants.each do |constant, val|
+      Object.const_set( constant, saved_constants[ constant ] )
+    end
+    $VERBOSE = old_verbose
+  end
+end
+
 module NginxConfiguration
   def self.default_configuration
     {
