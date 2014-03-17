@@ -75,11 +75,15 @@ module NginxTestHelper
   def start_server(config)
     error_message = ""
     unless config.configuration[:disable_start_stop_server]
-      status = POpen4::popen4("#{ config.nginx_executable } -c #{ config.configuration_filename }") do |stdout, stderr, stdin, pid|
-        error_message = stderr.read.strip unless stderr.eof
-        return error_message unless error_message.nil?
+      working_dir = nginx_tests_core_dir(config_id)
+      FileUtils.mkdir_p working_dir
+      Dir.chdir working_dir do
+        status = POpen4::popen4("#{ config.nginx_executable } -c #{ config.configuration_filename }") do |stdout, stderr, stdin, pid|
+          error_message = stderr.read.strip unless stderr.eof
+          return error_message unless error_message.nil?
+        end
+        fail("Server doesn't started - #{error_message}") unless status.exitstatus == 0
       end
-      fail("Server doesn't started - #{error_message}") unless status.exitstatus == 0
     end
     error_message
   end
