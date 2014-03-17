@@ -1,6 +1,7 @@
 require "nginx_test_helper/version"
 require "nginx_test_helper/env_methods"
 require "nginx_test_helper/config"
+require "nginx_test_helper/http_matchers"
 require "nginx_test_helper/rspec_utils"
 require "nginx_test_helper/command_line_tool"
 require "popen4"

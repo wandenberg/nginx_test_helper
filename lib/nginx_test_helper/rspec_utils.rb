@@ -1,6 +1,7 @@
 if defined?(RSpec)
   RSpec.configure do |config|
     config.include NginxTestHelper
+    config.include NginxTestHelper::HttpMatchers
 
     config.before(:suite) do
       FileUtils.rm_rf Dir[File.join(NginxTestHelper.nginx_tests_cores_dir, "**")]
