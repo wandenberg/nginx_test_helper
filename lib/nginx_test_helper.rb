@@ -45,20 +45,23 @@ module NginxTestHelper
   end
 
   def read_response_on_socket(socket, wait_for=nil)
+    will_retry = false
     response ||= socket.readpartial(1)
     while (tmp = socket.read_nonblock(256))
       response += tmp
     end
   rescue Errno::EAGAIN => e
-    headers, body = (response || "").split("\r\n\r\n", 2)
-    if !wait_for.nil? && (body.nil? || body.empty? || !body.include?(wait_for))
+    unless(wait_for.nil? || response.include?(wait_for))
+      will_retry = true
       IO.select([socket])
       retry
     end
   ensure
-    fail("Any response") if response.nil?
-    headers, body = response.split("\r\n\r\n", 2)
-    return headers, body
+    unless will_retry
+      fail("Any response") if response.nil?
+      headers, body = response.split("\r\n\r\n", 2)
+      return headers, body
+    end
   end
 
   def time_diff_milli(start, finish)
@@ -76,7 +79,7 @@ module NginxTestHelper
   def start_server(config)
     error_message = ""
     unless config.configuration[:disable_start_stop_server]
-      working_dir = nginx_tests_core_dir(config_id)
+      working_dir = nginx_tests_core_dir(config.config_id)
       FileUtils.mkdir_p working_dir
       Dir.chdir working_dir do
         status = POpen4::popen4("#{ config.nginx_executable } -c #{ config.configuration_filename }") do |stdout, stderr, stdin, pid|
