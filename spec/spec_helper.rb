@@ -27,9 +27,6 @@ rescue LoadError
   # ignore simplecov in ruby < 1.9
 end
 
-# Requires lib.
-Dir[File.expand_path('../lib/**/*.rb', File.dirname(__FILE__))].each { |f| require f }
-
 def with_constants(constants, &block)
   old_verbose, $VERBOSE = $VERBOSE, nil
   saved_constants = {}

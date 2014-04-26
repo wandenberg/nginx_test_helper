@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'nginx_test_helper/rspec_utils'
 
 describe "rspec_utils" do
 

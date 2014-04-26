@@ -1,9 +1,10 @@
 require 'spec_helper'
+require 'nginx_test_helper/command_line_tool'
 
 describe NginxTestHelper::CommandLineTool do
   before do
-    $stdout.stub!(:puts)
-    Dir.stub!(:pwd).and_return('tmp')
+    $stdout.stub(:puts)
+    Dir.stub(:pwd).and_return('tmp')
     FileUtils.mkdir_p('tmp/spec')
   end
 
@@ -34,7 +35,7 @@ describe NginxTestHelper::CommandLineTool do
   end
 
   it "should include require call on spec_helper if NgincConfiguration is not defined" do
-    Object.stub!(:const_defined?).with('NginxConfiguration').and_return(false)
+    Object.stub(:const_defined?).with('NginxConfiguration').and_return(false)
     File.open('tmp/spec/spec_helper.rb', 'w') { |f| f.write("#spec_helper content") }
     NginxTestHelper::CommandLineTool.new.process ["init"]
     File.read('tmp/spec/spec_helper.rb').should eql("#spec_helper content\nrequire File.expand_path('nginx_configuration', File.dirname(__FILE__))")

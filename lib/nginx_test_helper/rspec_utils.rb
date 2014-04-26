@@ -1,4 +1,6 @@
 if defined?(RSpec)
+  require 'nginx_test_helper/http_matchers'
+
   RSpec.configure do |config|
     config.include NginxTestHelper
     config.include NginxTestHelper::HttpMatchers

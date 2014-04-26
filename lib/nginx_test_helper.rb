@@ -86,7 +86,7 @@ module NginxTestHelper
           error_message = stderr.read.strip unless stderr.eof
           return error_message unless error_message.nil?
         end
-        fail("Server doesn't started - #{error_message}") unless status.exitstatus == 0
+        fail("Server doesn't started - #{error_message}") if (status.nil? || status.exitstatus != 0)
       end
     end
     error_message
@@ -99,7 +99,7 @@ module NginxTestHelper
         error_message = stderr.read.strip unless stderr.eof
         return error_message unless error_message.nil?
       end
-      fail("Server doesn't stoped - #{error_message}") unless status.exitstatus == 0
+      fail("Server doesn't stoped - #{error_message}") if (status.nil? || status.exitstatus != 0)
     end
     error_message
   end
@@ -118,7 +118,7 @@ private
   end
 
   def has_passed?
-    if self.respond_to?(:example) && !self.example.nil? && self.example.instance_variable_defined?(:@exception)
+    if self.respond_to?(:example) && !self.example.nil? && self.example.respond_to?(:exception)
       self.example.exception.nil?
     elsif !@test_passed.nil?
       @test_passed

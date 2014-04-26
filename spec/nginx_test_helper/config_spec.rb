@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'nginx_test_helper/config'
 
 describe NginxTestHelper::Config do
   let(:configuration) { {} }
