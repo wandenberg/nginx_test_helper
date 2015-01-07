@@ -18,6 +18,6 @@ Gem::Specification.new do |gem|
   gem.add_dependency "popen4"
 
   gem.add_development_dependency(%q<rspec>, [">= 2.10.0"])
-  gem.add_development_dependency(%q<debugger>, [">= 1.1.3"])
+  gem.add_development_dependency(%q<byebug>, [">= 3.5.1"])
   gem.add_development_dependency(%q<simplecov>, [">= 0.0.1"]) if RUBY_VERSION > "1.9.0"
 end
