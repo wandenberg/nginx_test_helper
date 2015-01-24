@@ -106,7 +106,9 @@ module NginxTestHelper
 
 private
   def config_id
-    if self.respond_to?(:example) && !self.example.nil? &&
+    if !Thread.current[:current_example].nil? && Thread.current[:current_example].respond_to?(:location)
+      (Thread.current[:current_example].location.split('/') - [".", "spec"]).join('_').gsub(/[\.\:]/, '_')
+    elsif self.respond_to?(:example) && !self.example.nil? &&
        self.example.respond_to?(:metadata) && !self.example.metadata.nil? &&
        !self.example.metadata[:location].nil?
       (self.example.metadata[:location].split('/') - [".", "spec"]).join('_').gsub(/[\.\:]/, '_')
@@ -118,7 +120,9 @@ private
   end
 
   def has_passed?
-    if self.respond_to?(:example) && !self.example.nil? && self.example.respond_to?(:exception)
+    if !Thread.current[:current_example].nil? && Thread.current[:current_example].respond_to?(:exception)
+      Thread.current[:current_example].exception.nil?
+    elsif self.respond_to?(:example) && !self.example.nil? && self.example.respond_to?(:exception)
       self.example.exception.nil?
     elsif !@test_passed.nil?
       @test_passed

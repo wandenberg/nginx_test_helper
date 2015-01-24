@@ -10,6 +10,7 @@ if defined?(RSpec)
     end
 
     config.around(:each) do |ex|
+      Thread.current[:current_example] = ex
       logs = Dir[File.join(NginxTestHelper.nginx_tests_tmp_dir, "logs", "**")]
       error_log_pre = logs.map{|log| File.readlines(log)}.flatten
 
@@ -29,12 +30,22 @@ if defined?(RSpec)
       (actual >= min) && (actual <= max)
     end
 
-    failure_message_for_should do |actual|
-      "expected that #{actual} would be in the interval from #{min} to #{max}"
-    end
+    if RSpec::Core::Version::STRING < "3.0.0"
+      failure_message_for_should do |actual|
+        "expected that #{actual} would be in the interval from #{min} to #{max}"
+      end
 
-    failure_message_for_should_not do |actual|
-      "expected that #{actual} would not be in the interval from #{min} to #{max}"
+      failure_message_for_should_not do |actual|
+        "expected that #{actual} would not be in the interval from #{min} to #{max}"
+      end
+    else
+      failure_message do |actual|
+        "expected that #{actual} would be in the interval from #{min} to #{max}"
+      end
+
+      failure_message_when_negated do |actual|
+        "expected that #{actual} would not be in the interval from #{min} to #{max}"
+      end
     end
 
     description do
@@ -47,12 +58,22 @@ if defined?(RSpec)
       actual.match(pattern)
     end
 
-    failure_message_for_should do |actual|
-      "expected that '#{actual}' would match the pattern '#{pattern.inspect}'"
-    end
+    if RSpec::Core::Version::STRING < "3.0.0"
+      failure_message_for_should do |actual|
+        "expected that '#{actual}' would match the pattern '#{pattern.inspect}'"
+      end
 
-    failure_message_for_should_not do |actual|
-      "expected that '#{actual}' would not match the pattern '#{pattern.inspect}'"
+      failure_message_for_should_not do |actual|
+        "expected that '#{actual}' would not match the pattern '#{pattern.inspect}'"
+      end
+    else
+      failure_message do |actual|
+        "expected that '#{actual}' would match the pattern '#{pattern.inspect}'"
+      end
+
+      failure_message_when_negated do |actual|
+        "expected that '#{actual}' would not match the pattern '#{pattern.inspect}'"
+      end
     end
 
     description do

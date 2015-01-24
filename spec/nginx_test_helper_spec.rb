@@ -232,6 +232,9 @@ describe NginxTestHelper do
     end
 
     context "and check config_id value" do
+      before { Thread.current[:current_example] = nil }
+      after { |ex| Thread.current[:current_example] = ex }
+
       it "should use example metadata if available" do
         allow(subject.example).to receive(:metadata).and_return(:location => "./spec/test_config_id_spec.rb:100")
         expect(subject.send(:config_id)).to eql("test_config_id_spec_rb_100")

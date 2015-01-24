@@ -5,7 +5,7 @@
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 RSpec.configure do |config|
-  config.treat_symbols_as_metadata_keys_with_true_values = true
+  config.treat_symbols_as_metadata_keys_with_true_values = true if RSpec::Core::Version::STRING < "3.0.0"
   config.run_all_when_everything_filtered = true
   config.filter_run :focus
 
