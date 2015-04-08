@@ -32,13 +32,15 @@ module NginxTestHelper
         self
       end
 
-      def failure_message_for_should
+      def failure_message
         "expected that the '#{request.method}' to '#{request.uri}' to #{description}"
       end
+      alias :failure_message_for_should :failure_message
 
-      def failure_message_for_should_not
+      def failure_message_when_negated
         "expected that the '#{request.method}' to '#{request.uri}' not to #{description}"
       end
+      alias :failure_message_for_should_not :failure_message_when_negated
 
       def description
         about_content = ""
