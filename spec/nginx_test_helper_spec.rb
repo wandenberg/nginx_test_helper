@@ -253,9 +253,21 @@ describe NginxTestHelper do
 
         expect(subject.send(:config_id)).to eql("test_config_id_by___name__")
       end
+
+      context "for rspec 3.0+" do
+        before { |ex| Thread.current[:current_example] = ex }
+
+        it "should use example metadata if available" do
+          allow(Thread.current[:current_example]).to receive(:location).and_return("./spec/test_config_id_spec.rb:101")
+          expect(subject.send(:config_id)).to eql("test_config_id_spec_rb_101")
+        end
+      end
     end
 
     context "and check if the test has passed" do
+      before { Thread.current[:current_example] = nil }
+      after { |ex| Thread.current[:current_example] = ex }
+
       context "using example exception if available" do
         it "should be 'true' if exception is 'nil'" do
           allow(subject.example).to receive(:exception).and_return(nil)
@@ -265,6 +277,20 @@ describe NginxTestHelper do
         it "should be 'false' if exception is not 'nil'" do
           allow(subject.example).to receive(:exception).and_return("")
           expect(subject.send(:has_passed?)).to be false
+        end
+
+        context "for rspec 3.0+" do
+          before { |ex| Thread.current[:current_example] = ex }
+
+          it "should be 'true' if exception is 'nil'" do
+            allow(Thread.current[:current_example]).to receive(:exception).and_return(nil)
+            expect(subject.send(:has_passed?)).to be true
+          end
+
+          it "should be 'false' if exception is not 'nil'" do
+            allow(Thread.current[:current_example]).to receive(:exception).and_return("")
+            expect(subject.send(:has_passed?)).to be false
+          end
         end
       end
 
