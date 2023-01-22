@@ -25,7 +25,7 @@ module NginxTestHelper
     config = Config.new(config_id, configuration)
     stderr_msg = start_server(config)
     stop_server(config)
-    "#{stderr_msg}\n#{File.read(config.error_log) if File.exists?(config.error_log)}"
+    "#{stderr_msg}\n#{File.read(config.error_log) if File.exist?(config.error_log)}"
   end
 
   def open_socket(host, port)

@@ -30,8 +30,8 @@ describe NginxTestHelper::Config do
 
   it "should create dirs where logs and client_body_temp will be stored" do
     NginxTestHelper::Config.new("config_id", {})
-    expect(File.exists?("/tmp/nginx_tests/logs")).to be true
-    expect(File.exists?("/tmp/nginx_tests/client_body_temp")).to be true
+    expect(File.exist?("/tmp/nginx_tests/logs")).to be true
+    expect(File.exist?("/tmp/nginx_tests/client_body_temp")).to be true
   end
 
   it "should create the configuration file using the template configuration" do
@@ -48,10 +48,10 @@ describe NginxTestHelper::Config do
 
   it "should has a method to delete config and log files" do
     NginxTestHelper::Config.delete_config_and_log_files(subject.config_id)
-    expect(File.exists?(subject.configuration[:configuration_filename])).to be false
-    expect(File.exists?(subject.configuration[:access_log])).to be false
-    expect(File.exists?(subject.configuration[:error_log])).to be false
-    expect(File.exists?(subject.configuration[:client_body_temp])).to be false
+    expect(File.exist?(subject.configuration[:configuration_filename])).to be false
+    expect(File.exist?(subject.configuration[:access_log])).to be false
+    expect(File.exist?(subject.configuration[:error_log])).to be false
+    expect(File.exist?(subject.configuration[:client_body_temp])).to be false
   end
 
   it "should expose configurations keys as methods" do

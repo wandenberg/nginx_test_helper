@@ -25,9 +25,9 @@ describe NginxTestHelper::CommandLineTool do
 
   it "should create example files showing how to use the gem" do
     NginxTestHelper::CommandLineTool.new.process ["init"]
-    expect(File.exists?('tmp/spec/nginx_configuration.rb')).to be true
-    expect(File.exists?('tmp/spec/example_spec.rb')).to be true
-    expect(File.exists?('tmp/spec/spec_helper.rb')).to be true
+    expect(File.exist?('tmp/spec/nginx_configuration.rb')).to be true
+    expect(File.exist?('tmp/spec/example_spec.rb')).to be true
+    expect(File.exist?('tmp/spec/spec_helper.rb')).to be true
 
     expect(File.read('tmp/spec/nginx_configuration.rb')).to eql(File.read('templates/spec/nginx_configuration.rb'))
     expect(File.read('tmp/spec/example_spec.rb')).to eql(File.read('templates/spec/example_spec.rb'))
